@@ -1,6 +1,6 @@
 // src/components/MapComponent.js
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Tooltip, useMap } from 'react-leaflet';
+import React, { useState, useEffect, useCallback } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -19,7 +19,8 @@ const MapComponent = ({ city, statistic, year }) => {
 
   const coordinates = cityCoordinates[city] || [33.7490, -84.3880];
 
-  const fetchGeoData = async () => {
+  // Fetch geo data with useCallback
+  const fetchGeoData = useCallback(async () => {
     try {
       console.log(`Fetching data for ${city}, ${statistic}, ${year}...`);
       const response = await axios.get(
@@ -32,13 +33,13 @@ const MapComponent = ({ city, statistic, year }) => {
       console.error('Error fetching GeoJSON:', error);
       setIsLoading(false);
     }
-  };
+  }, [city, statistic, year]); // Dependencies of fetchGeoData
 
   useEffect(() => {
     setIsLoading(true);
     setRenderKey((prev) => prev + 1);
     fetchGeoData();
-  }, [city, statistic, year]);
+  }, [fetchGeoData]); // Trigger when fetchGeoData changes
 
   const MapSetView = ({ coordinates }) => {
     const map = useMap();
@@ -104,7 +105,7 @@ const MapComponent = ({ city, statistic, year }) => {
     <MapContainer
       key={renderKey}
       center={coordinates}
-      zoom={12} // Adjusted zoom for better visibility
+      zoom={12}
       style={{ height: '600px', width: '100%' }}
       crs={L.CRS.EPSG3857} // Ensure CRS matches the tile layer
     >

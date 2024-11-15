@@ -1,25 +1,46 @@
-import logo from './logo.svg';
+// src/App.js
+import React, { useState } from 'react';
+import MapComponent from './components/MapComponent';
+import CitySelector from './components/CitySelector';
+import DownloadButton from './components/DownloadButton'; // Import the DownloadButton component
 import './App.css';
 
-function App() {
+const App = () => {
+  const [selectedCity, setSelectedCity] = useState('atlanta');
+  const [selectedStatistic, setSelectedStatistic] = useState('IDI');
+  const [selectedYear, setSelectedYear] = useState('2022');
+
+  const cities = ['atlanta', 'new_york', 'los_angeles'];
+  const statistics = ['IDI', 'PDI', 'CDI', 'LDI', 'PEI'];
+  const years = ['2022', '2013'];
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>VIP-SMUR-PEI Proof of Concept</h1>
+      <CitySelector
+        cities={cities}
+        selectedCity={selectedCity}
+        setSelectedCity={setSelectedCity}
+        statistics={statistics}
+        selectedStatistic={selectedStatistic}
+        setSelectedStatistic={setSelectedStatistic}
+        years={years}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+      />
+      <DownloadButton 
+        city={selectedCity}
+        statistic={selectedStatistic}
+        year={selectedYear}
+      /> {/* Add DownloadButton below MapComponent */}
+      <MapComponent
+        city={selectedCity}
+        statistic={selectedStatistic}
+        year={selectedYear}
+      />
     </div>
   );
-}
+};
 
 export default App;
+

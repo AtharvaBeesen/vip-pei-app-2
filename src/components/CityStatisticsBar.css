@@ -1,0 +1,57 @@
+/* src/components/CityStatisticsBar.css */
+.statistics-bar-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    text-align: left;
+  }
+  
+  .statistics-bar-container h3 {
+    color: #006d77;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .statistics-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .statistics-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .statistics-bar label {
+    width: 60px;
+    font-weight: bold;
+    color: #2d2d2d;
+  }
+  
+  .bar-wrapper {
+    flex: 1;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 20px;
+    position: relative;
+  }
+  
+  .bar {
+    background-color: #006d77;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 5px;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: width 0.3s ease-in-out;
+  }
+  

@@ -2,10 +2,10 @@
 
 /* General styles */
 body {
+  font-family: 'Nunito Sans', sans-serif; /* Replace with your chosen font */
   margin: 0;
-  font-family: 'Inter', sans-serif;
-  background-color: #f7f9fa; /* Subtle gray background */
-  color: #2d2d2d; /* Dark gray text */
+  background-color: #f7f9fa;
+  color: #2d2d2d;
   line-height: 1.6;
 }
 
@@ -56,6 +56,7 @@ h1 {
   color: #006d77;
 }
 
+/* Dropdown Styles */
 select {
   background-color: #ffffff;
   color: #2d2d2d;
@@ -63,6 +64,7 @@ select {
   border-radius: 6px;
   padding: 10px 15px;
   font-size: 1rem;
+  font-family: 'Nunito Sans', sans-serif; /* Ensure consistent font */
   outline: none;
   transition: all 0.3s ease;
   width: 100%;
@@ -74,6 +76,11 @@ select:focus {
   box-shadow: 0 0 5px rgba(0, 109, 119, 0.3);
 }
 
+/* Ensure the font also applies to dropdown options */
+option {
+  font-family: 'Nunito Sans', sans-serif; /* Apply font to dropdown options */
+}
+
 /* Download Buttons */
 .download-buttons {
   margin-top: 20px;
@@ -83,6 +90,7 @@ select:focus {
   gap: 15px;
 }
 
+/* Download Buttons */
 .download-buttons button {
   background-color: #006d77;
   color: #ffffff;
@@ -92,6 +100,7 @@ select:focus {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
+  font-family: 'Nunito Sans', sans-serif; /* Ensure consistent font */
   transition: all 0.3s ease;
 }
 
@@ -100,7 +109,6 @@ select:focus {
   color: #006d77;
   border: 1px solid #006d77;
 }
-
 /* Map */
 .leaflet-container {
   border-radius: 8px;

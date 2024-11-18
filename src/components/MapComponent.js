@@ -19,21 +19,21 @@ const MapComponent = ({ city, statistic, year }) => {
 
   const coordinates = cityCoordinates[city] || [33.7490, -84.3880];
 
-  // Fetch geo data with useCallback
   const fetchGeoData = useCallback(async () => {
+    const url = `https://vip-censusdata.s3.us-east-2.amazonaws.com/${city}_blockgroup_${statistic}_${year}.geojson`;
     try {
-      console.log(`Fetching data for ${city}, ${statistic}, ${year}...`);
-      const response = await axios.get(
-        `${process.env.PUBLIC_URL}/censusdata/${city}_blockgroup_${statistic}_${year}.geojson`
-      );
+      console.log(`Fetching GeoJSON from: ${url}`);
+      const response = await axios.get(url);
       console.log('GeoJSON data:', response.data);
-      setGeoData(response.data);
-      setIsLoading(false);
+      setGeoData(response.data); // Update state with fetched data
     } catch (error) {
       console.error('Error fetching GeoJSON:', error);
+      setGeoData(null); // Gracefully handle errors
+    } finally {
       setIsLoading(false);
     }
-  }, [city, statistic, year]); // Dependencies of fetchGeoData
+  }, [city, statistic, year]);
+  
 
   useEffect(() => {
     setIsLoading(true);
@@ -55,12 +55,19 @@ const MapComponent = ({ city, statistic, year }) => {
   };
 
   const getColor = (value) =>
-    value > 0.8 ? '#00441b'
-    : value > 0.6 ? '#238b45'
-    : value > 0.4 ? '#41ab5d'
-    : value > 0.2 ? '#74c476'
-    : value > 0.1 ? '#a1d99b'
-    : '#c7e9c0';
+    value > 0.95 ? '#006400'  // Dark Green
+    : value > 0.9 ? '#228B22'  // Forest Green
+    : value > 0.85 ? '#32CD32' // Lime Green
+    : value > 0.8 ? '#7FFF00'  // Chartreuse
+    : value > 0.7 ? '#ADFF2F' // Green-Yellow
+    : value > 0.6 ? '#FFFF66'  // Light Yellow
+    : value > 0.5 ? '#FFFF00'  // Bright Yellow
+    : value > 0.4 ? '#FFD700'  // Gold
+    : value > 0.3 ? '#FFA500'  // Orange
+    : value > 0.2 ? '#FF4500'  // Orange-Red
+    : value > 0.1 ? '#B22222'  // Firebrick
+    : '#8B0000';               // Dark Red
+
 
   const style = (feature) => ({
     fillColor: getColor(feature.properties[statistic] || 0),

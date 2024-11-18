@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import MapComponent from './components/MapComponent';
 import CitySelector from './components/CitySelector';
-import DownloadButton from './components/DownloadButton'; // Import the DownloadButton component
+import DownloadButton from './components/DownloadButton';
 import './App.css';
 
 const App = () => {
@@ -17,30 +17,33 @@ const App = () => {
   return (
     <div className="App">
       <h1>VIP-SMUR-PEI Proof of Concept</h1>
-      <CitySelector
-        cities={cities}
-        selectedCity={selectedCity}
-        setSelectedCity={setSelectedCity}
-        statistics={statistics}
-        selectedStatistic={selectedStatistic}
-        setSelectedStatistic={setSelectedStatistic}
-        years={years}
-        selectedYear={selectedYear}
-        setSelectedYear={setSelectedYear}
-      />
-      <DownloadButton 
-        city={selectedCity}
-        statistic={selectedStatistic}
-        year={selectedYear}
-      /> {/* Add DownloadButton below MapComponent */}
-      <MapComponent
-        city={selectedCity}
-        statistic={selectedStatistic}
-        year={selectedYear}
-      />
+      <div className="section">
+        <CitySelector
+          cities={cities}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+          statistics={statistics}
+          selectedStatistic={selectedStatistic}
+          setSelectedStatistic={setSelectedStatistic}
+          years={years}
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
+        />
+        <DownloadButton 
+          city={selectedCity}
+          statistic={selectedStatistic}
+          year={selectedYear}
+        />
+      </div>
+      <div className="section">
+        <MapComponent
+          city={selectedCity}
+          statistic={selectedStatistic}
+          year={selectedYear}
+        />
+      </div>
     </div>
   );
 };
 
 export default App;
-

@@ -1,23 +1,109 @@
 /* src/App.css */
-.App {
-  text-align: center;
+
+/* General styles */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #f7f9fa; /* Subtle gray background */
+  color: #2d2d2d; /* Dark gray text */
+  line-height: 1.6;
 }
 
+.App {
+  text-align: center;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+h1 {
+  color: #006d77; /* Dark teal */
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: none;
+}
+
+/* Section container for better structure */
+.section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+/* City Selector */
 .city-selector {
-  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.city-selector div {
+  flex: 1;
+  min-width: 200px;
+}
+
+.city-selector label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+  color: #006d77;
 }
 
 select {
-  padding: 10px;
-  margin-right: 10px;
+  background-color: #ffffff;
+  color: #2d2d2d;
+  border: 1px solid #006d77;
+  border-radius: 6px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
 }
 
-h1 {
-  color: #333;
+select:hover,
+select:focus {
+  border-color: #006d77;
+  box-shadow: 0 0 5px rgba(0, 109, 119, 0.3);
 }
 
-
+/* Download Buttons */
 .download-buttons {
-  margin-bottom: 20px; /* Adjust the value as needed */
-  margin-right: 10px; /* Adjust as needed for spacing between buttons */
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.download-buttons button {
+  background-color: #006d77;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.download-buttons button:hover {
+  background-color: #ffffff;
+  color: #006d77;
+  border: 1px solid #006d77;
+}
+
+/* Map */
+.leaflet-container {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }

@@ -12,9 +12,9 @@ const MapComponent = ({ city, statistic, year }) => {
   const [renderKey, setRenderKey] = useState(0); // Force re-render
 
   const cityCoordinates = {
-    atlanta: [33.7490, -84.3880],
-    new_york: [40.7128, -74.0060],
-    los_angeles: [34.0522, -118.2437],
+    Atlanta: [33.7490, -84.3880],
+    NYC: [40.7128, -74.0060],
+    Boston: [42.3742, -71.0371],
   };
 
   const coordinates = cityCoordinates[city] || [33.7490, -84.3880];

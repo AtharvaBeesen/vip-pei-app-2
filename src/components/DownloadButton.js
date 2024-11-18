@@ -9,17 +9,15 @@ const DownloadButton = ({ city, statistic, year }) => {
 
   return (
     <div className="download-buttons">
-      <h3>Download Data</h3>
-      <div className="button-container">
-        <a href={csvUrl} target="_blank" rel="noopener noreferrer" download={`${fileName}.csv`}>
-          <button>Download CSV</button>
-        </a>
-        <a href={geojsonUrl} target="_blank" rel="noopener noreferrer" download={`${fileName}.geojson`}>
-          <button>Download GeoJSON</button>
-        </a>
-      </div>
+      <button onClick={() => window.open(csvUrl, '_blank')}>
+        Download CSV
+      </button>
+      <button onClick={() => window.open(geojsonUrl, '_blank')}>
+        Download GeoJSON
+      </button>
     </div>
   );
 };
 
 export default DownloadButton;
+

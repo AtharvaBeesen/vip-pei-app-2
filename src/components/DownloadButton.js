@@ -4,6 +4,7 @@ const DownloadButton = ({ city, statistic, year }) => {
   const fileName = `${city}_blockgroup_${statistic}_${year}`;
   const s3BaseUrl = 'https://vip-censusdata.s3.us-east-2.amazonaws.com';
   const geojsonUrl = `${s3BaseUrl}/${fileName}.geojson`;
+  const csvUrl = `${s3BaseUrl}/${fileName}.csv`;
 
   return (
     <div className="download-buttons">

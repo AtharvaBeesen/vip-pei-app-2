@@ -1,4 +1,3 @@
-// src/components/MapComponent.js
 import React, { useState, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import axios from 'axios';
@@ -8,6 +7,7 @@ import '../App.css';
 
 const MapComponent = ({ city, statistic, year }) => {
   const [geoData, setGeoData] = useState(null);
+  // Check why we added this:
   const [isLoading, setIsLoading] = useState(true);
   const [renderKey, setRenderKey] = useState(0); // Force re-render
 
@@ -28,7 +28,7 @@ const MapComponent = ({ city, statistic, year }) => {
       setGeoData(response.data); // Update state with fetched data
     } catch (error) {
       console.error('Error fetching GeoJSON:', error);
-      setGeoData(null); // Gracefully handle errors
+      setGeoData(null); // Handle errors
     } finally {
       setIsLoading(false);
     }

@@ -1,8 +1,5 @@
-/* src/App.css */
-
-/* General styles */
 body {
-  font-family: 'Nunito Sans', sans-serif; /* Replace with your chosen font */
+  font-family: 'Nunito Sans', sans-serif;
   margin: 0;
   background-color: #f7f9fa;
   color: #2d2d2d;
@@ -16,7 +13,6 @@ body {
   margin: 0 auto;
 }
 
-/* Header */
 h1 {
   color: #006d77; /* Dark teal */
   font-size: 2.5rem;
@@ -90,7 +86,7 @@ option {
   gap: 15px;
 }
 
-/* Download Buttons */
+/* Download Button button itself */
 .download-buttons button {
   background-color: #006d77;
   color: #ffffff;

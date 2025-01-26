@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState } from 'react';
 import MapComponent from './components/MapComponent';
 import CitySelector from './components/CitySelector';

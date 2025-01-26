@@ -1,10 +1,8 @@
-// src/components/DownloadButton.js
 import React from 'react';
 
 const DownloadButton = ({ city, statistic, year }) => {
   const fileName = `${city}_blockgroup_${statistic}_${year}`;
-  const s3BaseUrl = 'https://vip-censusdata.s3.us-east-2.amazonaws.com'; // Replace with your actual S3 bucket URL
-  const csvUrl = `${s3BaseUrl}/${fileName}.csv`;
+  const s3BaseUrl = 'https://vip-censusdata.s3.us-east-2.amazonaws.com';
   const geojsonUrl = `${s3BaseUrl}/${fileName}.geojson`;
 
   return (
@@ -20,4 +18,3 @@ const DownloadButton = ({ city, statistic, year }) => {
 };
 
 export default DownloadButton;
-

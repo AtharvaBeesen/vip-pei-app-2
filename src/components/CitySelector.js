@@ -1,4 +1,3 @@
-// src/components/CitySelector.js
 import React from 'react';
 
 const CitySelector = ({

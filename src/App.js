@@ -48,7 +48,7 @@
 // };
 
 // export default App;
-// App.js
+//-------new App.js
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MapComponent from './components/MapComponent';
@@ -58,7 +58,7 @@ import Navbar from './components/Navbar';
 import CityCompare from './components/CityCompare';
 import './App.css';
 
-// Home Component: your current main page content
+//Home Component: current main page content
 const Home = () => {
   const [selectedCity, setSelectedCity] = useState('atlanta');
   const [selectedStatistic, setSelectedStatistic] = useState('IDI');
@@ -104,7 +104,7 @@ const App = () => {
   return (
     <Router>
       <div className="App">
-        <Navbar /> {/* Navigation Bar */}
+        <Navbar /> {/* NAV Bar */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/city-compare" element={<CityCompare />} />
@@ -115,4 +115,3 @@ const App = () => {
 };
 
 export default App;
-

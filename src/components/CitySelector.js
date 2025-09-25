@@ -4,9 +4,6 @@ const CitySelector = ({
   cities,
   selectedCity,
   setSelectedCity,
-  statistics,
-  selectedStatistic,
-  setSelectedStatistic,
   years,
   selectedYear,
   setSelectedYear,
@@ -30,20 +27,6 @@ const CitySelector = ({
       </select>
     </div>
 
-    <div>
-      <label htmlFor="statistic">Statistic</label>
-      <select
-        id="statistic"
-        value={selectedStatistic}
-        onChange={(e) => setSelectedStatistic(e.target.value)}
-      >
-        {statistics.map((stat, index) => (
-          <option key={index} value={stat}>
-            {stat.charAt(0).toUpperCase() + stat.slice(1)} {/* Capitalize the first letter */}
-          </option>
-        ))}
-      </select>
-    </div>
 
     <div>
       <label htmlFor="year">Year</label>

@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMap, ZoomControl, AttributionControl } from 'react-leaflet';
 import axios from 'axios';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
 
-const MapComponent = ({ city, statistic, year }) => {
+const MapComponent = ({ city, year, metricWeights }) => {
   const [geoData, setGeoData] = useState(null);
-  // Check why we added this:
   const [isLoading, setIsLoading] = useState(true);
   const [renderKey, setRenderKey] = useState(0); // Force re-render
 
@@ -19,20 +18,112 @@ const MapComponent = ({ city, statistic, year }) => {
 
   const coordinates = cityCoordinates[city] || [33.7490, -84.3880];
 
+  // Calculate composite scores based on metric weights
+  const calculateCompositeScores = (geoDataArray, metrics, weights) => {
+    if (!geoDataArray || geoDataArray.length === 0) return null;
+    
+    // Use the first GeoJSON as the base structure
+    const baseGeoData = geoDataArray[0];
+    const totalWeight = Object.values(weights).reduce((sum, weight) => sum + weight, 0);
+    
+    // If all weights are 0, return null
+    if (totalWeight === 0) return null;
+    
+    // Create a lookup for each metric's data by GEOID
+    const metricLookups = {};
+    geoDataArray.forEach((geoData, index) => {
+      const metric = metrics[index];
+      metricLookups[metric] = {};
+      geoData.features.forEach((feature, featureIndex) => {
+        const geoid = feature.properties.GEOID;
+        // Handle LDI's different data structure
+        let value = 0;
+        if (metric === 'LDI') {
+          // LDI has the value directly in properties.LDI
+          value = parseFloat(feature.properties.LDI) || 0;
+          // LDI doesn't have GEOID, so we'll use the feature index for matching
+          metricLookups[metric][`ldi_${featureIndex}`] = value;
+        } else {
+          // Other metrics use the standard structure
+          value = parseFloat(feature.properties[metric]) || 0;
+          metricLookups[metric][geoid] = value;
+        }
+      });
+    });
+    
+    // Calculate composite scores for each feature
+    const compositeFeatures = baseGeoData.features.map((feature, featureIndex) => {
+      const geoid = feature.properties.GEOID;
+      let compositeScore = 0;
+      
+      // Calculate weighted average
+      metrics.forEach(metric => {
+        let value = 0;
+        if (metric === 'LDI') {
+          // LDI uses feature index for matching since it doesn't have GEOID
+          value = metricLookups[metric][`ldi_${featureIndex}`] || 0;
+        } else {
+          // Other metrics use GEOID for matching
+          value = metricLookups[metric][geoid] || 0;
+        }
+        const weight = weights[metric] || 0;
+        compositeScore += (value * weight) / totalWeight;
+      });
+      
+      return {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          compositeScore: compositeScore,
+          // Keep individual metric values for tooltip
+          ...metrics.reduce((acc, metric) => {
+            let value = 0;
+            if (metric === 'LDI') {
+              // LDI uses feature index for matching since it doesn't have GEOID
+              value = metricLookups[metric][`ldi_${featureIndex}`] || 0;
+            } else {
+              // Other metrics use GEOID for matching
+              value = metricLookups[metric][geoid] || 0;
+            }
+            acc[metric] = value;
+            return acc;
+          }, {})
+        }
+      };
+    });
+    
+    return {
+      ...baseGeoData,
+      features: compositeFeatures
+    };
+  };
+
   const fetchGeoData = useCallback(async () => {
-    const url = `https://vip-censusdata.s3.us-east-2.amazonaws.com/${city}_blockgroup_${statistic}_${year}.geojson`;
+    const metrics = ['IDI', 'LDI', 'PDI', 'CDI'];
+    const baseUrl = 'https://vip-censusdata.s3.us-east-2.amazonaws.com';
+    
     try {
-      console.log(`Fetching GeoJSON from: ${url}`);
-      const response = await axios.get(url);
-      console.log('GeoJSON data:', response.data);
-      setGeoData(response.data); // Update state with fetched data
+      console.log(`Fetching multiple GeoJSONs for ${city} ${year}`);
+      
+      // Fetch all metric GeoJSONs in parallel
+      const promises = metrics.map(metric => 
+        axios.get(`${baseUrl}/${city}_blockgroup_${metric}_${year}.geojson`)
+      );
+      
+      const responses = await Promise.all(promises);
+      const geoDataArray = responses.map(response => response.data);
+      
+      // Calculate composite scores
+      const compositeData = calculateCompositeScores(geoDataArray, metrics, metricWeights);
+      setGeoData(compositeData);
+      
     } catch (error) {
-      console.error('Error fetching GeoJSON:', error);
-      setGeoData(null); // Handle errors
+      console.error('Error fetching GeoJSONs:', error);
+      setGeoData(null);
     } finally {
       setIsLoading(false);
     }
-  }, [city, statistic, year]);
+  }, [city, year, metricWeights]);
   
 
   useEffect(() => {
@@ -70,7 +161,7 @@ const MapComponent = ({ city, statistic, year }) => {
 
 
   const style = (feature) => ({
-    fillColor: getColor(feature.properties[statistic] || 0),
+    fillColor: getColor(feature.properties.compositeScore || 0),
     weight: 2,
     opacity: 1,
     color: 'white',
@@ -79,10 +170,17 @@ const MapComponent = ({ city, statistic, year }) => {
   });
 
   const onEachFeature = (feature, layer) => {
+    const compositeScore = feature.properties.compositeScore?.toFixed(2) || 'N/A';
+    const individualScores = ['IDI', 'LDI', 'PDI', 'CDI'].map(metric => 
+      `${metric}: ${(feature.properties[metric]?.toFixed(2)) || 'N/A'}`
+    ).join('<br/>');
+    
     layer.bindTooltip(
       `<div>
         <strong>Block Group ID:</strong> ${feature.properties.GEOID || 'N/A'}<br/>
-        <strong>${statistic} Score:</strong> ${(feature.properties[statistic]?.toFixed(2)) || 'N/A'}
+        <strong>Composite Score:</strong> ${compositeScore}<br/>
+        <strong>Individual Scores:</strong><br/>
+        ${individualScores}
       </div>`,
       { sticky: true }
     );
@@ -113,20 +211,24 @@ const MapComponent = ({ city, statistic, year }) => {
       key={renderKey}
       center={coordinates}
       zoom={12}
-      style={{ height: '600px', width: '100%' }}
-      crs={L.CRS.EPSG3857} // Ensure CRS matches the tile layer
+      zoomControl={false}
+      attributionControl={false}
+      style={{ height: '100vh', width: '100vw' }}
+      crs={L.CRS.EPSG3857}
     >
+      <AttributionControl position="bottomleft" />
+      <ZoomControl position="bottomleft" />
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; OpenStreetMap contributors"
         noWrap={true} // Prevents world wrapping
       />
-      <MapSetView coordinates={coordinates} /> {/* Correctly set map view */}
+      <MapSetView coordinates={coordinates} />
       {isLoading ? (
         <p>Loading map data...</p>
       ) : geoData ? (
         <GeoJSON
-          key={`${city}-${statistic}-${year}`}
+          key={`${city}-${year}-${JSON.stringify(metricWeights)}`}
           data={geoData}
           style={style}
           onEachFeature={onEachFeature}

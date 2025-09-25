@@ -6,53 +6,93 @@ body {
   line-height: 1.6;
 }
 
+/* Ensure the app can stretch to full viewport */
+html, body, #root {
+  height: 100%;
+}
+
 .App {
-  text-align: center;
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
 }
 
 h1 {
   color: #006d77; /* Dark teal */
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+  font-size: 1.1rem;
+  margin: 0;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   text-transform: none;
 }
 
-/* Section container for better structure */
+/* Old section container no longer used in fullscreen layout */
 .section {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  text-align: left;
+  display: none;
 }
 
-/* City Selector */
-.city-selector {
+/* Fullscreen map wrapper */
+.map-fullscreen {
+  position: absolute;
+  inset: 0;
+}
+
+/* City Display (replaces city selector) */
+.city-display {
+  text-align: left;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(0, 109, 119, 0.08);
+  border: 1px solid rgba(0, 109, 119, 0.2);
+  border-radius: 8px;
+  color: #006d77;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.city-display:hover {
+  background: rgba(0, 109, 119, 0.12);
+  border-color: rgba(0, 109, 119, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 109, 119, 0.15);
+}
+
+.city-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: 0.3px;
+  color: #006d77;
+}
+
+.city-subtitle {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  font-style: italic;
+  color: #004d52;
+}
+
+/* Year Selector */
+.year-selector {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 15px;
 }
 
-.city-selector div {
+.year-selector div {
   flex: 1;
   min-width: 200px;
 }
 
-.city-selector label {
+.year-selector label {
   font-weight: 600;
   margin-bottom: 5px;
   display: block;
   color: #006d77;
 }
 
-/* Dropdown Styles */
+/* Dropdown Styles (base) */
 select {
   background-color: #ffffff;
   color: #2d2d2d;
@@ -77,56 +117,98 @@ option {
   font-family: 'Nunito Sans', sans-serif; /* Apply font to dropdown options */
 }
 
-/* Download Buttons */
-.download-buttons {
-  margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
+/* Download dropdown */
+.download-dropdown {
+  position: relative;
+  margin-top: 15px;
 }
 
-/* Download Button button itself */
-.download-buttons button {
+.download-toggle {
   background-color: #006d77;
-  color: #ffffff;
+  color: white;
   border: none;
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 4px;
   cursor: pointer;
-  font-family: 'Nunito Sans', sans-serif; /* Ensure consistent font */
-  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  width: 100%;
+  text-align: left;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
-.download-buttons button:hover {
-  background-color: #ffffff;
-  color: #006d77;
-  border: 1px solid #006d77;
+.download-toggle:hover {
+  background-color: #004d52;
 }
+
+.download-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  margin-top: 2px;
+}
+
+.download-option {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #333;
+  transition: background-color 0.2s;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.download-option:hover {
+  background-color: #f5f5f5;
+}
+
+.download-option:first-child {
+  border-radius: 4px 4px 0 0;
+}
+
+.download-option:last-child {
+  border-radius: 0 0 4px 4px;
+}
+
 /* Map */
 .leaflet-container {
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
+  height: 100vh;
+  width: 100vw;
 }
 
-/* Navbar Styles */
+/* Navbar Styles - floating translucent header */
 .navbar {
-  background-color: #ffffff;
-  border-radius: 8px;
-  padding: 15px 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  height: 48px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(0, 109, 119, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  z-index: 1000;
 }
 
 /* Logo Style */
 .navbar-logo {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 700;
   color: #006d77; /* Dark teal */
 }
@@ -134,15 +216,16 @@ option {
 /* Navigation Links */
 .navbar-links {
   display: flex;
-  gap: 20px;
+  gap: 8px;
+  align-items: center;
 }
 
 .navbar-link {
   color: #006d77;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  padding: 8px 15px;
+  padding: 6px 10px;
   border-radius: 6px;
   transition: all 0.3s ease-in-out;
 }
@@ -151,4 +234,298 @@ option {
   background-color: #006d77;
   color: white;
   box-shadow: 0 2px 8px rgba(0, 109, 119, 0.2);
+}
+
+/* Translucent sidebar overlay (more top clearance) */
+.sidebar-overlay {
+  position: fixed;
+  top: 92px;                 /* was 76px — gives more space under header */
+  right: 12px;
+  bottom: auto;              /* don't pin to bottom */
+  max-height: calc(100vh - 92px - 32px); /* ~32px bottom gap */
+  width: 220px;
+  max-width: calc(100vw - 40px);
+  padding: 10px 12px;
+  overflow: auto;
+
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0, 109, 119, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 900;
+
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Extra breathing room on very small screens */
+@media (max-width: 600px) {
+  .sidebar-overlay {
+    top: 104px;
+    max-height: calc(100vh - 104px - 36px);
+  }
+}
+
+
+
+/* Tighter sidebar headings */
+.sidebar-section-title {
+  color: #006d77;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.sidebar-group {
+  margin-bottom: 12px;
+}
+
+/* City display in sidebar */
+.sidebar-overlay .city-display {
+  margin-bottom: 15px;
+  padding: 14px;
+  background: rgba(0, 109, 119, 0.08);
+  border: 1px solid rgba(0, 109, 119, 0.2);
+  border-radius: 6px;
+  color: #006d77;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.sidebar-overlay .city-display:hover {
+  background: rgba(0, 109, 119, 0.12);
+  border-color: rgba(0, 109, 119, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 109, 119, 0.15);
+}
+
+.sidebar-overlay .city-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 3px;
+  letter-spacing: 0.2px;
+  color: #006d77;
+}
+
+.sidebar-overlay .city-subtitle {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  font-style: italic;
+  color: #004d52;
+}
+
+/* Year selector in sidebar */
+.sidebar-overlay .year-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.sidebar-overlay .year-selector div {
+  min-width: 0;
+}
+
+.sidebar-overlay .year-selector label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #006d77;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+/* Smaller, tighter selects in the sidebar */
+.sidebar-overlay select {
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+/* Match option font inside the sidebar */
+.sidebar-overlay option {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 0.9rem;
+}
+
+/* Compact download dropdown in the sidebar */
+.sidebar-overlay .download-dropdown {
+  margin-top: 10px;
+}
+
+
+/* Sidebar stack: natural height, no inner/stack scrollbars */
+.sidebar-stack {
+  position: fixed;
+  right: 42px;            /* your current offset from the right */
+  top: 88px;              /* sits below the header */
+  /* no bottom: so height is just the sum of the cards */
+  width: 240px;
+  max-width: calc(100vw - 72px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 900;
+
+  /* hide any accidental scrollbars on the stack itself */
+  overflow: visible;
+  -ms-overflow-style: none;       /* IE/Edge */
+  scrollbar-width: none;          /* Firefox */
+}
+.sidebar-stack::-webkit-scrollbar { display: none; } /* WebKit */
+
+
+/* Cards adopt natural height; no internal scrollbars */
+.sidebar-stack .sidebar-overlay {
+  position: relative;
+  top: 0;
+  right: 0;
+  bottom: auto;
+  max-height: none;
+  width: 100%;
+  overflow: visible;              /* was auto before */
+  -ms-overflow-style: none;       /* IE/Edge */
+  scrollbar-width: none;          /* Firefox */
+}
+.sidebar-stack .sidebar-overlay::-webkit-scrollbar { display: none; } /* WebKit */
+
+
+/* Small-screen tweak: still keep it off the edge */
+@media (max-width: 600px) {
+  .sidebar-stack {
+    right: 24px;                     /* also move left on mobile */
+    top: 104px;
+    bottom: 36px;
+    width: min(85vw, 280px);
+    max-width: calc(100vw - 64px);   /* accounts for the 24px right gap + ~40px left space */
+  }
+}
+
+
+/* Base card look (unchanged visuals, no scrollbars) */
+.sidebar-overlay {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0, 109, 119, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+
+  overflow: visible;              /* ensure no inner scrollbars */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.sidebar-overlay::-webkit-scrollbar { display: none; }
+
+
+/* Section headings in cards */
+.sidebar-section-title {
+  color: #006d77;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+/* Groups in cards */
+.sidebar-group {
+  margin-bottom: 12px;
+}
+
+/* ----- Slider panel styles ----- */
+.slider-panel .slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.slider-panel .slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.slider-panel .slider-label {
+  color: #006d77;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.slider-panel .slider-value {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #006d77;
+  background: rgba(0, 109, 119, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+  min-width: 32px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.slider-panel .slider-row:hover .slider-value {
+  background: rgba(0, 109, 119, 0.15);
+  transform: scale(1.05);
+}
+
+/* The slider itself (range input) */
+.slider-panel input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 109, 119, 0.25);
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.slider-panel input[type="range"]:hover {
+  background: rgba(0, 109, 119, 0.4);
+}
+
+/* WebKit thumb */
+.slider-panel input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #006d77;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+/* Firefox thumb */
+.slider-panel input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #006d77;
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+/* Firefox track */
+.slider-panel input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: rgba(0, 109, 119, 0.25);
+  border-radius: 999px;
+}
+
+/* Small-screen tweaks */
+@media (max-width: 600px) {
+  .sidebar-stack {
+    top: 104px;
+    bottom: 36px;
+    width: min(85vw, 280px);
+  }
 }
